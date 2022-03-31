@@ -1,8 +1,25 @@
 version: '3.4'
 
 services:
+  # Product database
+  estore.productdb:
+    container_name: estoreproductdb    
+    restart: always    
+    ports:
+        - "27000:27017"
+
+  # E-commerce MVC web app
   estore.mvc:
+    container_name: estoremvc
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - "ProductDbSettings__ConnectionString=mongodb://estoreproductdb:27017" 
     ports:
-      - "80"
+      - "8005:80"
+    depends_on: 
+      - estore.productdb
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+   

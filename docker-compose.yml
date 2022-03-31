@@ -1,8 +1,14 @@
 version: '3.4'
 
 services:
+  # Product database
+  estore.productdb:
+    image: mongo    
+
+  # E-commerce MVC web app
   estore.mvc:
     image: ${DOCKER_REGISTRY-}estoremvc
     build:
       context: .
       dockerfile: EStore.MVC/Dockerfile
+    
