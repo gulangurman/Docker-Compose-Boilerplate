@@ -1,6 +1,10 @@
 version: '3.4'
 
 services:
+  # Event bus
+  rabbitmq:
+    image: rabbitmq:3.10-rc-management-alpine
+
   # Product database
   estore.productdb:
     image: mongo    

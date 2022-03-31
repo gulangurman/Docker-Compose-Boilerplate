@@ -1,6 +1,14 @@
 version: '3.4'
 
 services:
+  # Event bus for notifications
+  rabbitmq:
+    container_name: estoreeventbus
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
   # Product database
   estore.productdb:
     container_name: estoreproductdb    
@@ -15,10 +23,12 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - "ProductDbSettings__ConnectionString=mongodb://estoreproductdb:27017" 
+      - "EventBus__HostName=rabbitmq"
     ports:
       - "8005:80"
     depends_on: 
       - estore.productdb
+      - rabbitmq
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
