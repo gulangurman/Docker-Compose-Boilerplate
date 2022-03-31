@@ -1,5 +1,7 @@
-﻿using EStore.MVC.Models;
+﻿using EStore.MVC.Data;
+using EStore.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using System.Diagnostics;
 
 namespace EStore.MVC.Controllers
@@ -7,15 +9,18 @@ namespace EStore.MVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IProductContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IProductContext context, ILogger<HomeController> logger)
         {
+            _context = context;
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var products = await _context.Products.Find(x => true).ToListAsync();
+            return View(products);
         }
 
         public IActionResult Privacy()
